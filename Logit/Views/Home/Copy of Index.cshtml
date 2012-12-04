@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section featured {
+
+}
+
+
+<div class="tabbable">
+    <ul class="nav nav-tabs" data-bind="foreach: projects">
+        <li data-bind="css: { active: $root.selected() === $data }">
+            <a href="#" data-bind="click: $root.selected, text: name"></a>
+        </li>
+    </ul>
+    <div class="tab-content" data-bind="foreach: projects">
+        <div class="tab-pane" data-bind="css: { active: $root.selected() === $data }">
+
+            <div data-bind="foreach: entries">
+                <div data-bind="ifnot: inEdit">
+                    <div class="logEntry">
+                        <a data-bind="click: toggleEdit">Edit</a>
+                        <small data-bind="text: date"></small>
+                        <small data-bind="text: by"></small>
+                        <p data-bind="text: text"></p>
+                    </div>
+                </div>
+                <div data-bind="if: inEdit">
+                    <div class="logEntryEdit">
+                        <a data-bind="click: toggleEdit">Save</a>
+                        <small data-bind="text: date"></small>
+                        <small data-bind="text: by"></small>
+                        <textarea data-bind="value: text" rows="10" class="input-block-level" ></textarea>
+                    </div>
+                </div>
+            </div>
+            <textarea rows="10" class="input-block-level" data-bind="value: textToAdd"></textarea>
+            <button data-bind="click: addLogEntry" class="btn btn-primary">Add</button>
+        </div>
+    </div>
+</div>
+​

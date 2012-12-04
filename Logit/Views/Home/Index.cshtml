@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section featured {
+
+}
+
+<div id="summary">
+    @*<span data-bind="text: userName"></span>*@
+    <a href="#addProjectDialog" style="float: right; margin-top: 20px" role="button" data-toggle="modal">add project</a>
+    <ul class="nav nav-tabs" data-bind="foreach: projects()">
+        <li data-bind="css: { active: $root.selected() === $data }">
+            <a href="#" data-bind="click: $root.select, text: title"></a>
+        </li>
+    </ul>
+</div>
+<h3>
+    Project name:<span data-bind="text: selected().title"></span>
+</h3>
+
+
+<div id="addProjectDialog" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Modal header</h3>
+    </div>
+    <div class="modal-body">
+        Project name:<input data-bind="value: newProjectTitle" />
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn">Close</a>
+        <a href="#" data-bind="click: addProject" class="btn btn-primary">Save changes</a>
+    </div>
+</div>
+
+<!--
+<div class="tabbable">
+    <ul class="nav nav-tabs" data-bind="foreach: projects">
+        <li data-bind="css: { active: $root.selected() === $data }">
+            <a href="#" data-bind="click: $root.selected, text: name"></a>
+        </li>
+    </ul>
+    <div class="tab-content" data-bind="foreach: projects">
+        <div class="tab-pane" data-bind="css: { active: $root.selected() === $data }">
+
+            <div data-bind="foreach: entries">
+                <div data-bind="ifnot: inEdit">
+                    <div class="logEntry">
+                        <a data-bind="click: toggleEdit">Edit</a>
+                        <small data-bind="text: date"></small>
+                        <small data-bind="text: by"></small>
+                        <p data-bind="text: text"></p>
+                    </div>
+                </div>
+                <div data-bind="if: inEdit">
+                    <div class="logEntryEdit">
+                        <a data-bind="click: toggleEdit">Save</a>
+                        <small data-bind="text: date"></small>
+                        <small data-bind="text: by"></small>
+                        <textarea data-bind="value: text" rows="10" class="input-block-level" ></textarea>
+                    </div>
+                </div>
+            </div>
+            <textarea rows="10" class="input-block-level" data-bind="value: textToAdd"></textarea>
+            <button data-bind="click: addLogEntry" class="btn btn-primary">Add</button>
+        </div>
+    </div>
+</div>
+-->
+​

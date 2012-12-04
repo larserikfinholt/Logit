@@ -1,0 +1,30 @@
+﻿@import url('less/bootstrap.less');
+
+
+
+.smalllink {
+    float: right;
+	color:@linkColor;
+}
+.smalllink:hover {
+    float: right;
+	color:@linkColorHover;
+}
+
+.logEntry {
+    .well;
+	a {
+		.smalllink;
+	}
+	
+	
+}
+
+.logEntryEdit {
+    .logEntry;
+    .alert;
+    .alert-info;
+	a {
+		.smalllink;
+	}
+}
