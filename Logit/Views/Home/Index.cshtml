@@ -14,10 +14,50 @@
         </li>
     </ul>
 </div>
-<h3>
-    Project name:<span data-bind="text: selected().title"></span>
-</h3>
+<div data-bind="if: selected()!=undefined">
+    <h3>Project name:<span data-bind="text: selected().title"></span>
+    </h3>
+    <a href="#editProjectDialog" style="float: right; margin-top:-20px;" role="button" data-toggle="modal">edit project</a>
+    <div data-bind="foreach: selected().notes()">
+                        <div data-bind="ifnot: inEdit">
+                    <div class="logEntry">
+                        <a data-bind="click: update">Edit</a>
+                        <small data-bind="text: date"></small>
+                        <p data-bind="text: text"></p>
+                    </div>
+                </div>
+                <div data-bind="if: inEdit">
+                    <div class="logEntryEdit">
+                        <a data-bind="click: update">Save</a>
+                        <small data-bind="text: date"></small>
+                        <textarea data-bind="value: text" rows="10" class="input-block-level" ></textarea>
+                    </div>
+                </div>
 
+    </div>
+@*    <div>
+        <div class="logEntryEdit">
+            <textarea data-bind="text: selected().noteToAdd" rows="10" class="input-block-level"></textarea>
+            <a data-bind="click: selected().addNote">Add</a>
+        </div>
+    </div>*@
+
+
+
+<div id="editProjectDialog" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Edit project</h3>
+    </div>
+    <div class="modal-body">
+        Project name:<input data-bind="value: selected().title" />
+    </div>
+    <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="btn">Close</a>
+        <a href="#" data-dismiss="modal" data-bind="click: selected().updateProject" class="btn btn-primary">Update project</a>
+    </div>
+</div>
+</div>
 
 <div id="addProjectDialog" class="modal hide fade">
     <div class="modal-header">
@@ -28,8 +68,8 @@
         Project name:<input data-bind="value: newProjectTitle" />
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn">Close</a>
-        <a href="#" data-bind="click: addProject" class="btn btn-primary">Save changes</a>
+        <a href="#" data-dismiss="modal" class="btn">Close</a>
+        <a href="#" data-dismiss="modal" data-bind="click: addProject" class="btn btn-primary">Save changes</a>
     </div>
 </div>
 

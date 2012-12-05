@@ -28,6 +28,7 @@ namespace Logit.Services
         public override object OnPost(Project project)
         {
             var newProject = project;
+            newProject.ProjectId = "projects/3";
             return new HttpResult(newProject)
             {
                 StatusCode = HttpStatusCode.Created,

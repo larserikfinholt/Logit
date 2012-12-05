@@ -15,7 +15,7 @@ namespace Logit.Services
 
     public class NoteService : RestServiceBase<Note>
     {
-        private readonly List<Note> notes = new List<Note> { new Note { Text = "Text1" }, new Note { Text = "Text2" } };
+        private readonly List<Note> notes = new List<Note> { new Note { Text = "Text1", NoteId = "notes/1", ProjectId = "project/1" }, new Note { Text = "Text2", NoteId = "notes/2", ProjectId = "project/1" } };
 
         public override object OnGet(Note request)
         {
@@ -40,9 +40,9 @@ namespace Logit.Services
         public override object OnPut(Note note)
         {
             var updated = note;
-            return new HttpResult()
+            return new HttpResult(updated)
             {
-                StatusCode = HttpStatusCode.NoContent,
+                StatusCode = HttpStatusCode.OK,
                 Headers = {
                     { HttpHeaders.Location, this.RequestContext.AbsoluteUri.WithTrailingSlash()  + "Note/"+note.NoteId}
                 }
