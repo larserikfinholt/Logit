@@ -12,10 +12,10 @@ namespace Logit
                         "~/Scripts/jquery-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/resten").Include(
-                        "~/Scripts/bootstrap.js",
-                        "~/Scripts/knockout-{version}.debug.js",
-                        "~/Scripts/knockout.mapping-latest.debug.js",
-                        "~/Scripts/app.js"));
+                        "~/Scripts/bootstrap.js"));
+                        //"~/Scripts/knockout-{version}.debug.js",
+                        //"~/Scripts/knockout.mapping-latest.debug.js",
+                        //"~/Scripts/app.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                         "~/Scripts/jquery-ui-{version}.js"));

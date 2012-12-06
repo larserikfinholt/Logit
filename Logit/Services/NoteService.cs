@@ -15,7 +15,7 @@ namespace Logit.Services
 
     public class NoteService : RestServiceBase<Note>
     {
-        private readonly List<Note> notes = new List<Note> { new Note { Text = "Text1", NoteId = "notes/1", ProjectId = "project/1" }, new Note { Text = "Text2", NoteId = "notes/2", ProjectId = "project/1" } };
+        private readonly List<Note> notes = new List<Note> { new Note { Text = "Text1", NoteId = "notes/1", ProjectId = "projects/1" }, new Note { Text = "Text2", NoteId = "notes/2", ProjectId = "projects/1" } };
 
         public override object OnGet(Note request)
         {
@@ -25,14 +25,16 @@ namespace Logit.Services
             return notes.First();
         }
 
-        public override object OnPost(Note note)
+        public override object OnPost(Note n)
         {
-            var newNote = note;
+            var newNote = n;
+            newNote.NoteId = "notes/4";
+            newNote.Text = n.Text + "server - created";
             return new HttpResult(newNote)
             {
                 StatusCode = HttpStatusCode.Created,
                 Headers = {
-                    { HttpHeaders.Location, this.RequestContext.AbsoluteUri.WithTrailingSlash() + "Note/"+note.NoteId}
+                    { HttpHeaders.Location, this.RequestContext.AbsoluteUri.WithTrailingSlash() + newNote.NoteId}
                 }
             };
         }
@@ -40,11 +42,12 @@ namespace Logit.Services
         public override object OnPut(Note note)
         {
             var updated = note;
+            updated.Text = note.Text + "server - updated"; 
             return new HttpResult(updated)
             {
                 StatusCode = HttpStatusCode.OK,
                 Headers = {
-                    { HttpHeaders.Location, this.RequestContext.AbsoluteUri.WithTrailingSlash()  + "Note/"+note.NoteId}
+                    { HttpHeaders.Location, this.RequestContext.AbsoluteUri.WithTrailingSlash() + note.NoteId}
                 }
             };
         }
