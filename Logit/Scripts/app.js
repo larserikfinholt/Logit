@@ -2,13 +2,17 @@
 /// <reference path="knockout.mapping-latest.debug.js" />
 /// <reference path="require.js" />
 
-define(['jquery', 'noteViewModel', 'knockout', 'knockout.mapping'], function ($, note, ko) {
+define(['jquery', 'noteViewModel', 'knockout', 'dataservice', 'knockout.mapping'], function ($, note, ko, service, mapping) {
+
+    ko.mapping = mapping;
 
     var ProjectViewModel = function (data) {
         //console.log("Created ProjectViewModel " + data.title);
         var me = this;
+
         this.title = ko.observable(data.title);
-        this.projectId = ko.observable(data.projectId);
+        this.id = ko.observable(data.id);
+        this.owner = ko.observable(data.owner);
         this.text = ko.observable(data.text);
         this.notes = ko.observableArray([]);
         this.loaded = ko.observable(false);
@@ -24,27 +28,16 @@ define(['jquery', 'noteViewModel', 'knockout', 'knockout.mapping'], function ($,
         }
         this.updateProject = function () {
 
-            $.ajax({
-                url: "api/" + me.projectId(),
-                type: 'PUT',
-                dataType: 'json',
-                data: ko.mapping.toJSON(me),
-                success: function (data, textStatus, jqXHR) {
-                    //alert(jqXHR.getResponseHeader('Location'));
-                },
-                statusCode: {
-                    200: function (created) {
-                        var t = ko.mapping.fromJS(created, projectDataMappingOptions);
-                    }
-                }
+            service.ajaxRequest( 'POST', 'api/projects', ko.mapping.toJSON(me)).statusCode({
+                200: function(){ alert(200);},
+                201: function(){ alert(201);},
             });
-
 
         }
 
         this.loadNotes = function () {
-            url = "api/" + this.projectId() + "/notes";
-            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
+            url = "api/notes";
+            $.getJSON(url, {projectId:me.id()}, function (data, textStatus, jqXHR) {
                 ko.mapping.fromJS(data, noteDataMappingOptions, me.notes);
                 me.loaded(true);
                 me.addEmptyNoteOrActiveLatest();
@@ -54,7 +47,7 @@ define(['jquery', 'noteViewModel', 'knockout', 'knockout.mapping'], function ($,
         this.addEmptyNoteOrActiveLatest = function () {
 
             // Todo: if last note date is today, then activate latest note, else create a new empty note and activate it
-            me.notes.push(new note.NoteViewModel({ text: "...new note...", projectId: me.projectId, noteId: "notes/0", isEdit: true }));
+            me.notes.push(new note.NoteViewModel({ text: "...new note...", projectId: me.id(), isEdit: true }));
 
         }
     };
@@ -80,7 +73,7 @@ define(['jquery', 'noteViewModel', 'knockout', 'knockout.mapping'], function ($,
         var self = this;
         this.projects = ko.observableArray([]);
         this.newProjectTitle = ko.observable("Untiled");
-        this.selected = ko.observable();//new ProjectViewModel({ projectId:"projects/0", title:'tmp' }));
+        this.selected = ko.observable();//new ProjectViewModel({ id:"projects/0", title:'tmp' }));
 
         this.loadProjects = function () {
             $.getJSON("api/projects", {}, function (data, textStatus, jqXHR) {
@@ -121,7 +114,5 @@ define(['jquery', 'noteViewModel', 'knockout', 'knockout.mapping'], function ($,
     }
 
 });
-
-
 
 

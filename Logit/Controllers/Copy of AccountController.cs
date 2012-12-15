@@ -10,13 +10,12 @@ using Microsoft.Web.WebPages.OAuth;
 using WebMatrix.WebData;
 using Logit.Filters;
 using Logit.Models;
-using Logit.Common;
 
 namespace Logit.Controllers
 {
     [Authorize]
     [InitializeSimpleMembership]
-    public class AccountController : RavenBaseController
+    public class AccountController : Controller
     {
         //
         // GET: /Account/Login
@@ -36,26 +35,13 @@ namespace Logit.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginModel model, string returnUrl)
         {
-
-            var user = RavenSession.GetUserByUserName(model.UserName);
-
-            if (user == null || user.ValidatePassword(model.Password) == false)
+            if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
             {
-                ModelState.AddModelError("UserNotExistOrPasswordNotMatch",
-                                         "Email and password do not match to any known user.");
-            }
-            else if (user.Enabled == false)
-            {
-                ModelState.AddModelError("NotEnabled", "The user is not enabled");
-            }
-
-            if (ModelState.IsValid)
-            {
-                FormsAuthentication.SetAuthCookie(model.UserName, true);
                 return RedirectToLocal(returnUrl);
             }
 
-
+            // If we got this far, something failed, redisplay form
+            ModelState.AddModelError("", "The user name or password provided is incorrect.");
             return View(model);
         }
 
@@ -66,8 +52,8 @@ namespace Logit.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            //WebSecurity.Logout();
-            FormsAuthentication.SignOut();
+            WebSecurity.Logout();
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -93,21 +79,8 @@ namespace Logit.Controllers
                 // Attempt to register the user
                 try
                 {
-                    var newUser = new User();
-                    newUser.SetPassword(model.Password);
-                    newUser.UserName = model.UserName;
-                    newUser.Enabled = true;
-
-                    RavenSession.Store(newUser);
-
-                    RavenSession.SaveChanges();
-
-                    //WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
-                    FormsAuthentication.SetAuthCookie(newUser.UserName, true);
-
-
-
-                    //WebSecurity.Login(model.UserName, model.Password);
+                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
+                    WebSecurity.Login(model.UserName, model.Password);
                     return RedirectToAction("Index", "Home");
                 }
                 catch (MembershipCreateUserException e)

@@ -1,5 +1,5 @@
 ﻿/// <reference path="require.js" />
-define(['knockout', 'jquery', 'knockout.mapping'], function (ko, $, mapping) {
+define(['knockout', 'jquery', 'dataservice', 'knockout.mapping'], function (ko, $, service, mapping) {
 
     ko.mapping = mapping;
 
@@ -9,45 +9,17 @@ define(['knockout', 'jquery', 'knockout.mapping'], function (ko, $, mapping) {
         this.text = ko.observable(data.text);
         this.date = "idag";
         this.inEdit = ko.observable(data.isEdit);
-        this.noteId = ko.observable(data.noteId);
+        this.id = ko.observable(data.id);
         this.projectId = data.projectId;
         this.createdDate = ko.observable(data.created);
         this.update = function () {
             if (self.inEdit()) {
-                if (self.noteId() == "notes/0") {
-                    $.ajax({
-                        url: "api/" + self.projectId() + "/notes",
-                        type: 'POST',
-                        dataType: 'json',
-                        data: ko.mapping.toJSON(self),
-                        success: function (data, textStatus, jqXHR) {
-                            self.inEdit(false);
-                        },
-                        statusCode: {
-                            201: function (created) {
-                                self.noteId(created.noteId);
-                                self.createdDate = created.created;
-                                self.text(created.text);
-                            }
-                        }
-                    });
-
-                } else {
-                    $.ajax({
-                        url: "api/notes/",
-                        type: 'PUT',
-                        dataType: 'json',
-                        data: ko.mapping.toJSON(self),
-                        success: function (data, textStatus, jqXHR) {
-                            self.inEdit(false);
-                        },
-                        statusCode: {
-                            200: function (ok) {
-                                self.text(ok.text);
-                            }
-                        }
-                    });
-                }
+                service.ajaxRequest('POST', 'api/notes', ko.mapping.toJSON(self)).success( function (d) {
+                    self.id(d.id);
+                    self.createdDate(d.created);
+                    self.text(d.text);
+                    self.inEdit(false);
+                });
             } else {
                 self.inEdit(true);
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Raven.Client.Document;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,6 +15,8 @@ namespace Logit
 
     public class MvcApplication : System.Web.HttpApplication
     {
+        public static DocumentStore Store;
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();

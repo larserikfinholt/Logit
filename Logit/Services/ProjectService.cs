@@ -9,43 +9,57 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
+using Logit.Common;
 
 namespace Logit.Services
 {
-    
+
     public class ProjectService : RestServiceBase<Project>
     {
-        private readonly List<Project> projects = new List<Project> { new Project { Title = "Proj1", ProjectId = "projects/1" }, new Project { Title = "Proj2", ProjectId = "projects/2" } };
+        private User user;
+
+        private IDocumentSession Session { get; set; }
+        
+        public ProjectService(IDocumentSession documentSession)
+        {
+            Session = documentSession;
+            user = Session.GetCurrentUser();
+        }
 
         public override object OnGet(Project request)
         {
-            if (string.IsNullOrEmpty(request.ProjectId))
-                return projects;
+            if (string.IsNullOrEmpty(request.Id))
+                return Session.Query<Project>().Where(x => x.Owner == user.Id);
 
-            return projects.First();
+            return Session.Query<Project>().Where(x => x.Id == request.Id);
         }
 
         public override object OnPost(Project project)
         {
-            var newProject = project;
-            newProject.ProjectId = "projects/3";
-            return new HttpResult(newProject)
+            project.Owner = user.Id;
+
+            Session.Store(project);
+            Session.SaveChanges();
+            
+
+            return new HttpResult(project)
             {
                 StatusCode = HttpStatusCode.Created,
                 Headers = {
-                    { HttpHeaders.Location, this.RequestContext.AbsoluteUri.WithTrailingSlash() + "Project/"+project.ProjectId}
+                    { HttpHeaders.Location, this.RequestContext.AbsoluteUri.WithTrailingSlash() + project.Id}
                 }
             };
         }
 
         public override object OnPut(Project project)
         {
-            var updated = project;
-            return new HttpResult()
+            Session.Store(project);
+            Session.SaveChanges();
+            return new HttpResult(project)
             {
-                StatusCode = HttpStatusCode.NoContent,
+                StatusCode = HttpStatusCode.OK,
                 Headers = {
-                    { HttpHeaders.Location, this.RequestContext.AbsoluteUri.WithTrailingSlash()  + "Project/"+project.ProjectId}
+                    { HttpHeaders.Location, this.RequestContext.AbsoluteUri.WithTrailingSlash()  + project.Id}
                 }
             };
         }

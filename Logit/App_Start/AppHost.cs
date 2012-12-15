@@ -19,6 +19,8 @@ using System.Reflection;
 using Raven.Client.Indexes;
 using Raven.Client;
 using Logit.Models;
+using Raven.Client.Document;
+using Funq;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(Logit.App_Start.AppHost), "Start")]
 
@@ -48,7 +50,7 @@ namespace Logit.App_Start
             : base("StarterTemplate ASP.NET Host", typeof(HelloService).Assembly)
         {
             base.Container.Register<IDocumentStore>(documentStore);
-
+            base.Container.Register(c => c.Resolve<IDocumentStore>().OpenSession()).ReusedWithin(ReuseScope.Request);
         }
 
         public override void Configure(Funq.Container container)
@@ -63,11 +65,11 @@ namespace Logit.App_Start
                 .Add<Hello>("/todos")
                 .Add<Hello>("/todos/{Id}")
                 .Add<Project>("/projects")
-                .Add<Project>("/projects/{ProjectId}")
+                .Add<Project>("/projects/{Id}")
                 .Add<Note>("/notes")
-                .Add<Note>("/notes/{NoteId}")
+                .Add<Note>("/notes/{Id}")
                 .Add<Note>("/projects/{ProjectId}/notes")
-                .Add<Note>("/projects/{ProjectId}/notes/{NoteId}");
+                .Add<Note>("/projects/{ProjectId}/notes/{Id}");
 
             //Change the default ServiceStack configuration
             //SetConfig(new EndpointHostConfig {
@@ -122,14 +124,16 @@ namespace Logit.App_Start
 
         public static void Start()
         {
+
             //Raven.Database.Server.NonAdminHttp.EnsureCanListenToWhenInNonAdminContext(8887);
-            var store = new EmbeddableDocumentStore { UseEmbeddedHttpServer = false, Configuration = { Port = 8887 } };
-            store.Initialize();
+            //var store = new EmbeddableDocumentStore { UseEmbeddedHttpServer = false, Configuration = { Port = 8887 } };
+            MvcApplication.Store  = new DocumentStore { Url = "http://larserikwin8:8080/" };
+            MvcApplication.Store.Initialize();
 
-            IndexCreation.CreateIndexes(Assembly.GetCallingAssembly(), store);
+            IndexCreation.CreateIndexes(Assembly.GetCallingAssembly(), MvcApplication.Store);
 
 
-            new AppHost(store).Init();
+            new AppHost(MvcApplication.Store).Init();
         }
     }
 }
