@@ -125,9 +125,10 @@ namespace Logit.App_Start
         public static void Start()
         {
 
-            //Raven.Database.Server.NonAdminHttp.EnsureCanListenToWhenInNonAdminContext(8887);
-            //var store = new EmbeddableDocumentStore { UseEmbeddedHttpServer = false, Configuration = { Port = 8887 } };
-            MvcApplication.Store  = new DocumentStore { Url = "http://larserikwin8:8080/" };
+            Raven.Database.Server.NonAdminHttp.EnsureCanListenToWhenInNonAdminContext(8887);
+
+            MvcApplication.Store = new EmbeddableDocumentStore { UseEmbeddedHttpServer = false };
+            //MvcApplication.Store  = new DocumentStore { Url = "http://larserikwin8:8080/" };
             MvcApplication.Store.Initialize();
 
             IndexCreation.CreateIndexes(Assembly.GetCallingAssembly(), MvcApplication.Store);

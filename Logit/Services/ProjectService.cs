@@ -18,28 +18,28 @@ namespace Logit.Services
     {
         private User user;
 
-        private IDocumentSession Session { get; set; }
+        private IDocumentSession RavenSession { get; set; }
         
         public ProjectService(IDocumentSession documentSession)
         {
-            Session = documentSession;
-            user = Session.GetCurrentUser();
+            RavenSession = documentSession;
+            user = RavenSession.GetCurrentUser();
         }
 
         public override object OnGet(Project request)
         {
             if (string.IsNullOrEmpty(request.Id))
-                return Session.Query<Project>().Where(x => x.Owner == user.Id);
+                return RavenSession.Query<Project>().Where(x => x.Owner == user.Id);
 
-            return Session.Query<Project>().Where(x => x.Id == request.Id);
+            return RavenSession.Query<Project>().Where(x => x.Id == request.Id);
         }
 
         public override object OnPost(Project project)
         {
             project.Owner = user.Id;
 
-            Session.Store(project);
-            Session.SaveChanges();
+            RavenSession.Store(project);
+            RavenSession.SaveChanges();
             
 
             return new HttpResult(project)
@@ -53,8 +53,8 @@ namespace Logit.Services
 
         public override object OnPut(Project project)
         {
-            Session.Store(project);
-            Session.SaveChanges();
+            RavenSession.Store(project);
+            RavenSession.SaveChanges();
             return new HttpResult(project)
             {
                 StatusCode = HttpStatusCode.OK,

@@ -201,6 +201,7 @@
     <Compile Include="Common\DocumentSessionExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\JasmineController.cs" />
     <Compile Include="Controllers\RavenBaseController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -220,6 +221,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
     <Content Include="Content\images\glyphicons-halflings.png" />
+    <Content Include="Content\jasmine\jasmine.css" />
+    <Content Include="Content\jasmine\jasmine_favicon.png" />
     <Content Include="Content\js\ss-validation.js" />
     <Content Include="Content\logit.css">
       <DependentUpon>logit.less</DependentUpon>
@@ -289,8 +292,17 @@
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\logit - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\logit - Web Deploy.pubxml" />
+    <Content Include="Scripts\jasmine\jasmine-html.js" />
+    <Content Include="Scripts\jasmine\jasmine.js" />
+    <Content Include="Scripts\jasmine\MIT.LICENSE" />
     <None Include="Scripts\jquery-1.8.3.intellisense.js" />
     <Content Include="Scripts\dataservice.js" />
+    <Content Include="Scripts\jasmine-samples\Player.js" />
+    <Content Include="Scripts\jasmine-samples\PlayerSpec.js" />
+    <Content Include="Scripts\jasmine-samples\Song.js" />
+    <Content Include="Scripts\jasmine-samples\SpecHelper.js" />
     <Content Include="Scripts\jquery-1.8.3.js" />
     <Content Include="Scripts\jquery-1.8.3.min.js" />
     <Content Include="Scripts\knockout.mapping-latest.debug.js" />
@@ -301,7 +313,14 @@
     <Content Include="Scripts\noteViewModel.js" />
     <Content Include="Scripts\r.js" />
     <Content Include="Scripts\require.js" />
+    <Content Include="Scripts\tests.js" />
+    <Content Include="Scripts\tests\index.html" />
+    <Content Include="Scripts\tests\main.js" />
+    <Content Include="Scripts\tests\require-main.js" />
+    <Content Include="Scripts\tests\specs\noteViewModel.spec.js" />
+    <Content Include="Scripts\tests\specs\projectViewModel.spec.js" />
     <Content Include="Views\Home\Copy of Index.cshtml" />
+    <Content Include="Views\Jasmine\SpecRunner.cshtml" />
     <TypeScriptCompile Include="Scripts\Home.ts" />
     <TypeScriptCompile Include="Scripts\Home.dataAccess.ts" />
     <Content Include="Scripts\Home.dataAccess.js">

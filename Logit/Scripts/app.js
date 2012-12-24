@@ -2,7 +2,7 @@
 /// <reference path="knockout.mapping-latest.debug.js" />
 /// <reference path="require.js" />
 
-define(['jquery', 'noteViewModel', 'knockout', 'dataservice', 'knockout.mapping'], function ($, note, ko, service, mapping) {
+define(['jquery', 'noteViewModel', 'knockout', 'dataservice', 'knockout.mapping', 'moment'], function ($, note, ko, service, mapping, moment) {
 
     ko.mapping = mapping;
 
@@ -14,7 +14,7 @@ define(['jquery', 'noteViewModel', 'knockout', 'dataservice', 'knockout.mapping'
         this.id = ko.observable(data.id);
         this.owner = ko.observable(data.owner);
         this.text = ko.observable(data.text);
-        this.notes = ko.observableArray([]);
+        this.notes = ko.observableArray(data.notes); // []
         this.loaded = ko.observable(false);
         this.activate = function () {
             if (!this.loaded()) {
@@ -26,27 +26,41 @@ define(['jquery', 'noteViewModel', 'knockout', 'dataservice', 'knockout.mapping'
 
 
         }
+        this.getLastNote = function () {
+            return me.notes()[me.notes().length-1];
+        }
         this.updateProject = function () {
 
-            service.ajaxRequest( 'POST', 'api/projects', ko.mapping.toJSON(me)).statusCode({
-                200: function(){ alert(200);},
-                201: function(){ alert(201);},
+            service.ajaxRequest('POST', 'api/projects', ko.mapping.toJSON(me)).statusCode({
+                200: function () { alert(200); },
+                201: function () { alert(201); },
             });
 
         }
 
         this.loadNotes = function () {
             url = "api/notes";
-            $.getJSON(url, {projectId:me.id()}, function (data, textStatus, jqXHR) {
-                ko.mapping.fromJS(data, noteDataMappingOptions, me.notes);
-                me.loaded(true);
-                me.addEmptyNoteOrActiveLatest();
-            });
+            service.ajaxRequest('GET', 'api/notes', { projectId: me.id() })
+                .success(me.notesLoadedCallback);
         };
+        this.notesLoadedCallback = function (data, textStatus, jqXHR) {
+            ko.mapping.fromJS(data, noteDataMappingOptions, me.notes);
+            me.loaded(true);
+            me.addEmptyNoteOrActiveLatest();
+        }
 
         this.addEmptyNoteOrActiveLatest = function () {
 
-            // Todo: if last note date is today, then activate latest note, else create a new empty note and activate it
+            console.log("addEmptyNoteOrActiveLatest");
+            if (me.notes().length > 0) {
+                var last = me.getLastNote();
+                if (last.isCreatedToday()) {
+                    last.setEditMode(true);
+                    console.log("Last note created today - reusing " + last.created);
+                    return
+                }
+            }
+            console.log("Creating new empty note");
             me.notes.push(new note.NoteViewModel({ text: "...new note...", projectId: me.id(), isEdit: true }));
 
         }
@@ -76,14 +90,16 @@ define(['jquery', 'noteViewModel', 'knockout', 'dataservice', 'knockout.mapping'
         this.selected = ko.observable();//new ProjectViewModel({ id:"projects/0", title:'tmp' }));
 
         this.loadProjects = function () {
-            $.getJSON("api/projects", {}, function (data, textStatus, jqXHR) {
+            $.getJSON("api/projects?random=" + (new Date()).getTime(), {}, function (data, textStatus, jqXHR) {
                 ko.mapping.fromJS(data, projectDataMappingOptions, self.projects);
                 self.select(self.projects()[0]);
-            }); 
+            });
         };
         this.select = function (d) {
-            d.activate();
-            self.selected(d);
+            if (d) {
+                d.activate();
+                self.selected(d);
+            }
         };
 
         this.addProject = function () {
@@ -111,6 +127,7 @@ define(['jquery', 'noteViewModel', 'knockout', 'dataservice', 'knockout.mapping'
 
     return {
         ViewModel: ViewModel,
+        ProjectViewModel: ProjectViewModel
     }
 
 });

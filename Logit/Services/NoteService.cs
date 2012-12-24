@@ -16,16 +16,14 @@ namespace Logit.Services
 
     public class NoteService : RestServiceBase<Note>
     {
-        private readonly List<Note> notes = new List<Note> { new Note { Text = "Text1", Id = "notes/1", ProjectId = "projects/1" }, new Note { Text = "Text2", Id = "notes/2", ProjectId = "projects/1" } };
-
         private User user;
 
-        private IDocumentSession Session { get; set; }
+        private IDocumentSession RavenSession { get; set; }
 
         public NoteService(IDocumentSession documentSession)
         {
-            Session = documentSession;
-            user = Session.GetCurrentUser();
+            RavenSession = documentSession;
+            user = RavenSession.GetCurrentUser();
         }
 
 
@@ -36,16 +34,18 @@ namespace Logit.Services
             if (string.IsNullOrEmpty(request.ProjectId))
                 return new List<Note>();
 
-            return Session.Query<Note>().Where(x => x.ProjectId == request.ProjectId);
+            return RavenSession.Query<Note>().Where(x => x.ProjectId == request.ProjectId);
         }
 
         public override object OnPost(Note n)
         {
             var newNote = n;
             newNote.Text = n.Text ;
+            newNote.Created = n.Created == new DateTime() ? DateTime.UtcNow : n.Created;
+            newNote.LastUpated = DateTime.UtcNow;
 
-            Session.Store(newNote);
-            Session.SaveChanges();
+            RavenSession.Store(newNote);
+            RavenSession.SaveChanges();
 
             return new HttpResult(newNote)
             {
@@ -60,8 +60,8 @@ namespace Logit.Services
         {
             var updated = note;
             updated.Text = note.Text;
-            Session.Store(updated);
-            Session.SaveChanges();
+            RavenSession.Store(updated);
+            RavenSession.SaveChanges();
             return new HttpResult(updated)
             {
                 StatusCode = HttpStatusCode.OK,

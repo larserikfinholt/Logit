@@ -22,15 +22,16 @@
         <div data-bind="ifnot: inEdit">
             <div class="logEntry">
                 <a data-bind="click: update">Edit</a>
-                <small data-bind="text: date"></small>
+                <small data-bind="text: createdDate"></small>
                 <p data-bind="text: text"></p>
             </div>
         </div>
         <div data-bind="if: inEdit">
             <div class="logEntryEdit">
                 <a data-bind="click: update">Save</a>
-                <small data-bind="text: date"></small>
-                <textarea data-bind="value: text" rows="10" class="input-block-level"></textarea>
+                <small data-bind="text: createdDate"></small>
+                <textarea data-bind="value: text, valueUpdate:'afterkeydown'" rows="10" class="input-block-level"></textarea>
+                <small data-bind="text: textChanged()?'modified':'saved'"></small>
             </div>
         </div>
 

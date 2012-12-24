@@ -15,7 +15,6 @@ using Logit.Common;
 namespace Logit.Controllers
 {
     [Authorize]
-    [InitializeSimpleMembership]
     public class AccountController : RavenBaseController
     {
         //
@@ -127,6 +126,7 @@ namespace Logit.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Disassociate(string provider, string providerUserId)
         {
+            throw new NotImplementedException("Har ikke erstattet denne med ravendb enda");
             string ownerAccount = OAuthWebSecurity.GetUserName(provider, providerUserId);
             ManageMessageId? message = null;
 
@@ -154,6 +154,7 @@ namespace Logit.Controllers
 
         public ActionResult Manage(ManageMessageId? message)
         {
+            throw new NotImplementedException("Har ikke erstattet denne med ravendb enda");
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
@@ -171,6 +172,7 @@ namespace Logit.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Manage(LocalPasswordModel model)
         {
+            throw new NotImplementedException("Har ikke erstattet denne med ravendb enda");
             bool hasLocalAccount = OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
             ViewBag.HasLocalPassword = hasLocalAccount;
             ViewBag.ReturnUrl = Url.Action("Manage");
@@ -244,6 +246,7 @@ namespace Logit.Controllers
         [AllowAnonymous]
         public ActionResult ExternalLoginCallback(string returnUrl)
         {
+            throw new NotImplementedException("Har ikke erstattet denne med ravendb enda");
             AuthenticationResult result = OAuthWebSecurity.VerifyAuthentication(Url.Action("ExternalLoginCallback", new { ReturnUrl = returnUrl }));
             if (!result.IsSuccessful)
             {
@@ -279,6 +282,7 @@ namespace Logit.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLoginConfirmation(RegisterExternalLoginModel model, string returnUrl)
         {
+            throw new NotImplementedException("Har ikke erstattet denne med ravendb enda");
             string provider = null;
             string providerUserId = null;
 

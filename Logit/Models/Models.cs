@@ -20,6 +20,7 @@ namespace Logit.Models
         public string Id { get; set; }
         public string ProjectId { get; set; }
         public DateTime Created { get; set; }
+        public DateTime LastUpated { get; set; }
         public string Text { get; set; }
     }
 
