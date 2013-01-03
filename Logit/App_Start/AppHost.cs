@@ -87,6 +87,7 @@ namespace Logit.App_Start
             container.Register<ICacheClient>(new MemoryCacheClient());
             container.Register<ISessionFactory>(c =>
                 new SessionFactory(c.Resolve<ICacheClient>()));
+            //container.Register<NoteService>(c => new NoteService(c.Resolve<IDocumentSession>()));
 
             //Set MVC to use the same Funq IOC as ServiceStack
             ControllerBuilder.Current.SetControllerFactory(new FunqControllerFactory(container));
@@ -127,12 +128,28 @@ namespace Logit.App_Start
 
             Raven.Database.Server.NonAdminHttp.EnsureCanListenToWhenInNonAdminContext(8887);
 
+#if DEBUG
+            MvcApplication.Store = new DocumentStore { ConnectionStringName="localRaven" };
+#else
             MvcApplication.Store = new EmbeddableDocumentStore { UseEmbeddedHttpServer = false };
-            //MvcApplication.Store  = new DocumentStore { Url = "http://larserikwin8:8080/" };
+#endif
+
             MvcApplication.Store.Initialize();
 
-            IndexCreation.CreateIndexes(Assembly.GetCallingAssembly(), MvcApplication.Store);
 
+            //MvcApplication.Store.DatabaseCommands.PutIndex("Reminders/ToBeSent",
+            //                            new IndexDefinitionBuilder<Reminder>
+            //                            {
+            //                                Map = reminders => from reminder in reminders
+            //                                                   select reminder ,
+
+            //                                Reduce = result => from r in result
+            //                                                   where r.RemindersSent < 3 
+            //                                                   select r
+
+            //                            });
+
+            IndexCreation.CreateIndexes(Assembly.GetCallingAssembly(), MvcApplication.Store);
 
             new AppHost(MvcApplication.Store).Init();
         }

@@ -25,7 +25,16 @@ namespace Logit.Services
             RavenSession = documentSession;
             user = RavenSession.GetCurrentUser();
         }
+        protected NoteService(IDocumentSession documentSession, User _user)
+        {
+            RavenSession = documentSession;
+            user = _user;
+        }
 
+        public static NoteService CreateNoteService(IDocumentSession documentSession, User _user)
+        {
+            return new NoteService(documentSession, _user);
+        }
 
 
 
@@ -39,12 +48,27 @@ namespace Logit.Services
 
         public override object OnPost(Note n)
         {
-            var newNote = n;
+            var project = RavenSession.Load<Project>(n.ProjectId);
+            var note = n.Id==null?n:RavenSession.Load<Note>(n.Id);
+            var newNote = note;
             newNote.Text = n.Text ;
             newNote.Created = n.Created == new DateTime() ? DateTime.UtcNow : n.Created;
             newNote.LastUpated = DateTime.UtcNow;
 
             RavenSession.Store(newNote);
+
+            // Add a reminder
+            if (project.MaxNoteIntervalInDaysBeforeReminder > 0)
+            {
+                var reminder = RavenSession.Query<Reminder>().Where(r => r.ProjectId == n.ProjectId && r.RemindersSent == 0).FirstOrDefault();
+                if (reminder == null)
+                {
+                    reminder = new Reminder { ProjectId = project.Id, ProjectTitle = project.Title, UserId = project.Owner, FullName=user.Email };
+                }
+                reminder.LastNoteText = n.Text;
+                reminder.Due = DateTime.Now.AddDays(project.MaxNoteIntervalInDaysBeforeReminder);
+                RavenSession.Store(reminder);
+            }
             RavenSession.SaveChanges();
 
             return new HttpResult(newNote)

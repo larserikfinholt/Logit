@@ -1,0 +1,52 @@
+﻿@model List<Logit.Models.EmailReminderData>
+
+@{
+    ViewBag.Title = "Index";
+    
+}
+
+<h2>Scheduler: @ViewBag.Message</h2>
+
+
+@if (!string.IsNullOrEmpty(ViewBag.Error))
+{
+    <div class="alert">
+        @ViewBag.Error
+    </div>
+}
+@if (ViewBag.SentMessages > 0)
+{
+    <div class="alert alert-success">
+        Sent @ViewBag.SentMessages emails!
+    </div>
+}
+
+<h3>The following emails should be sent</h3>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+    <h4>@item.FullName</h4>
+        foreach (var reminder in item.Reminders)
+        {
+    <span class="tmpFirst">@reminder.ProjectTitle</span>
+    <span class="tmpSec">@reminder.Due</span>
+    <span class="tmpThird">@reminder.LastNoteText</span>
+        
+        }
+
+    }
+}
+<h3>The following emails was sent</h3>
+@if (ViewBag.Messages != null)
+{
+
+    foreach (var item in ViewBag.Messages)
+    {
+    <div class="well">
+        <span>To:</span><span>@item.Email</span>
+        <hr />
+        <div>@MvcHtmlString.Create(item.HtmlBodyString)</div>
+    </div>
+}
+}

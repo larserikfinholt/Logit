@@ -14,8 +14,9 @@ define(['knockout', 'jquery', 'dataservice', 'knockout.mapping', 'moment'], func
         this.inEdit = ko.observable(false);
         this.id = ko.observable(data.id);
         this.project = data.project;
+        this.autoUpdateEnabled = false;
         this.projectId = data.projectId;
-        this.createdDate = ko.observable(moment(data.created));
+        this.created = ko.observable(moment(data.created));
         this.lastUpdated = ko.observable(moment(data.lastUpdated));
         this.orignalText = ko.observable(data.text);
         this.textChanged = ko.computed(function () {
@@ -28,32 +29,36 @@ define(['knockout', 'jquery', 'dataservice', 'knockout.mapping', 'moment'], func
         });
 
         this.isCreatedToday = function () {
-            var diff = this.today.diff(this.createdDate(), 'hours');
-            console.log("Diff:" +diff);
-            if ( diff < 3) {
+            var diff = this.today.diff(this.created(), 'hours');
+            console.log("Diff:" + diff);
+            if (diff < 3) {
                 return true;
             }
             return false;
         }
         this.setEditMode = function (setEdit) {
+            console.log("set edit mode: " + setEdit);
             self.orignalText(self.text());
             self.inEdit(setEdit);
             self.startAutoUpdate();
         }
         this.startAutoUpdate = function () {
-            setTimeout(function () { self.update(); }, 10000);
-            console.log("started auto update");
+            if (self.autoUpdateEnabled) {
+                setTimeout(function () { self.update(); }, 10000);
+                console.log("started auto update");
+            }
         }
 
-        this.setToday=function (dag){
-            self.today =moment(dag);
+        this.setToday = function (dag) {
+            self.today = moment(dag);
         }
 
         this.update = function () {
             if (self.inEdit() && self.textChanged()) {
-                service.ajaxRequest('POST', 'api/notes', ko.mapping.toJSON(self)).success( function (d) {
+                self.created(self.created().toDate()); // Hack... pag moment ikke deserialiserer 
+                service.ajaxRequest('POST', 'api/notes', ko.mapping.toJSON(self)).success(function (d) {
                     self.id(d.id);
-                    self.createdDate(moment(d.created));
+                    self.created(moment(d.created));
                     self.text(d.text);
                     self.setEditMode(self.isCreatedToday());
                 });

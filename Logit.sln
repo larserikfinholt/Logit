@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logit", "Logit\Logit.csproj", "{A24843C2-966F-434E-957D-3301C3ECC10C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logit.Tests", "Logit.Tests\Logit.Tests.csproj", "{C6712C7C-B4A8-4E25-BB5E-5C9F42EC836B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{A24843C2-966F-434E-957D-3301C3ECC10C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A24843C2-966F-434E-957D-3301C3ECC10C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A24843C2-966F-434E-957D-3301C3ECC10C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6712C7C-B4A8-4E25-BB5E-5C9F42EC836B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6712C7C-B4A8-4E25-BB5E-5C9F42EC836B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6712C7C-B4A8-4E25-BB5E-5C9F42EC836B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6712C7C-B4A8-4E25-BB5E-5C9F42EC836B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -11,6 +11,7 @@ define(['jquery', 'noteViewModel', 'knockout', 'dataservice', 'knockout.mapping'
         var me = this;
 
         this.title = ko.observable(data.title);
+        this.maxNoteIntervalInDaysBeforeReminder = ko.observable(data.maxNoteIntervalInDaysBeforeReminder);
         this.id = ko.observable(data.id);
         this.owner = ko.observable(data.owner);
         this.text = ko.observable(data.text);
@@ -55,14 +56,16 @@ define(['jquery', 'noteViewModel', 'knockout', 'dataservice', 'knockout.mapping'
             if (me.notes().length > 0) {
                 var last = me.getLastNote();
                 if (last.isCreatedToday()) {
+                    last.autoUpdateEnabled = true;
                     last.setEditMode(true);
-                    console.log("Last note created today - reusing " + last.created);
+                    console.log("Last note created today - reusing " + last.created());
                     return
                 }
             }
             console.log("Creating new empty note");
-            me.notes.push(new note.NoteViewModel({ text: "...new note...", projectId: me.id(), isEdit: true }));
-
+            me.notes.push(new note.NoteViewModel({ text: "", projectId: me.id() }));
+            me.getLastNote().autoUpdateEnabled = true;
+            me.getLastNote().setEditMode(true);
         }
     };
 

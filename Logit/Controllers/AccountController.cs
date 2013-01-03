@@ -95,6 +95,7 @@ namespace Logit.Controllers
                     var newUser = new User();
                     newUser.SetPassword(model.Password);
                     newUser.UserName = model.UserName;
+                    newUser.Email = model.Email;
                     newUser.Enabled = true;
 
                     RavenSession.Store(newUser);

@@ -1,0 +1,81 @@
+﻿@model Logit.Models.EmailReminderData
+
+<body>
+
+    <style type="text/css">
+        .lastReminder {
+            font-style:italic;
+            font-weight:bold;
+            color:red;
+        }
+        .firstReminder {
+            font-style:italic;
+            font-weight:bold;
+            color:green;
+        }
+        th {
+            text-align:left;
+            color:#111111;
+            font-weight:normal;
+            font-size:10px;
+        }
+        table {
+            margin-top:10px;
+            margin-bottom:10px;
+            background-color:#f7f7f7;
+        }
+        body {
+            font-family:Helvetica, Arial, 'DejaVu Sans', 'Liberation Sans', Freesans, sans-serif;
+            color:#333333;
+        }
+
+    </style>
+
+    <h4>Hello,  @Model.FullName!</h4>
+    Below is a list of reminders from Logit
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Due date</th>
+                    <th>Last note</th>
+                    <th>Level</th>
+                </tr>
+            </thead>
+            @foreach (var item in @Model.Reminders)
+            {
+                <tr>
+                    <td><a href="htttp://logit.azurewebsites.net/">@item.ProjectTitle</a></td>
+                    <td>@item.Due.ToShortDateString()</td>
+                    <td>@item.LastNoteText</td>
+                    <td>
+                        @switch (@item.RemindersSent)
+                        {
+                            case 0:
+                                <span class="firstReminder">First reminder</span>
+                                break;
+                                case 1:
+                                <span>Second reminder</span>
+                                break;
+                                case 2:
+                                <span class="lastReminder">Last reminder</span>
+                                break;
+                            default:
+                            <span>Veldig rart</span>
+                                break;
+                        }
+                    </td>
+                </tr>
+            
+            }
+        </table>
+
+    </div>
+    <br />
+    Keep on logit!
+
+    <br />
+    <hr />
+    <div class="footer">The logit team 2013</div>
+</body>
