@@ -29,7 +29,8 @@
         <div data-bind="if: inEdit">
             <div class="logEntryEdit">
                 <a data-bind="click: update">Save</a>
-                <small data-bind="text: created"></small>
+                <small data-bind="text: created, click: setEditDateMode"></small>
+                 <input data-bind="datepicker: created, datepickerOptions: {weekStart:1, format:'dd.mm.yyyy'}"/>
                 <textarea data-bind="value: text, valueUpdate:'afterkeydown'" rows="10" class="input-block-level"></textarea>
                 <small data-bind="text: textChanged()?'modified':'saved'"></small>
                 <small class="pull-right" data-bind="text: $root.selected().maxNoteIntervalInDaysBeforeReminder()>0?'A reminder will be sent on this project':''"></small>

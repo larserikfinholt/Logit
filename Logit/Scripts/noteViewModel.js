@@ -16,9 +16,10 @@ define(['knockout', 'jquery', 'dataservice', 'knockout.mapping', 'moment'], func
         this.project = data.project;
         this.autoUpdateEnabled = false;
         this.projectId = data.projectId;
-        this.created = ko.observable(moment(data.created));
+        this.created = ko.observable(data.created?new Date(data.created):new Date());
         this.lastUpdated = ko.observable(moment(data.lastUpdated));
         this.orignalText = ko.observable(data.text);
+        this.inDateEdit = ko.observable(false);
         this.textChanged = ko.computed(function () {
             if (self.orignalText() != self.text()) {
                 return true;
@@ -37,10 +38,15 @@ define(['knockout', 'jquery', 'dataservice', 'knockout.mapping', 'moment'], func
             return false;
         }
         this.setEditMode = function (setEdit) {
-            console.log("set edit mode: " + setEdit);
             self.orignalText(self.text());
             self.inEdit(setEdit);
             self.startAutoUpdate();
+        }
+        this.setEditDateMode = function () {
+            console.log("Set edit mode" + this.inDateEdit());
+            if (this.inEdit()) {
+                this.inDateEdit(!this.inDateEdit());
+            }
         }
         this.startAutoUpdate = function () {
             if (self.autoUpdateEnabled) {
@@ -55,7 +61,7 @@ define(['knockout', 'jquery', 'dataservice', 'knockout.mapping', 'moment'], func
 
         this.update = function () {
             if (self.inEdit() && self.textChanged()) {
-                self.created(self.created().toDate()); // Hack... pag moment ikke deserialiserer 
+                //self.created(self.created().toDate()); // Hack... pag moment ikke deserialiserer 
                 service.ajaxRequest('POST', 'api/notes', ko.mapping.toJSON(self)).success(function (d) {
                     self.id(d.id);
                     self.created(moment(d.created));

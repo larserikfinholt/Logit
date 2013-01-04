@@ -21,6 +21,7 @@ using Raven.Client;
 using Logit.Models;
 using Raven.Client.Document;
 using Funq;
+using ServiceStack.Text;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(Logit.App_Start.AppHost), "Start")]
 
@@ -57,6 +58,7 @@ namespace Logit.App_Start
         {
             //Set JSON web services to return idiomatic JSON camelCase properties
             ServiceStack.Text.JsConfig.EmitCamelCaseNames = true;
+            JsConfig.DateHandler = JsonDateHandler.ISO8601;
 
             //Configure User Defined REST Paths
             Routes

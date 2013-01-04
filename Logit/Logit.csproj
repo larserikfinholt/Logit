@@ -309,6 +309,7 @@
     <Content Include="jqunback-1.51.min.js" />
     <Content Include="README.txt" />
     <Content Include="Scripts\app.js" />
+    <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\logit - FTP.pubxml" />
@@ -338,6 +339,8 @@
     <Content Include="Scripts\tests\require-main.js" />
     <Content Include="Scripts\tests\specs\noteViewModel.spec.js" />
     <Content Include="Scripts\tests\specs\projectViewModel.spec.js" />
+    <Content Include="Scripts\underscore.js" />
+    <Content Include="Scripts\underscore.min.js" />
     <Content Include="Views\Home\Copy of Index.cshtml" />
     <Content Include="Views\Jasmine\SpecRunner.cshtml" />
     <Content Include="Views\Scheduler\Index.cshtml" />
